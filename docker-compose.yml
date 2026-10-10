@@ -1,0 +1,28 @@
+# Mesmo arquivo para local, staging e producao: o que muda e o .env de cada ambiente.
+services:
+  api:
+    image: ${IMAGE_NAME:-fiap-api-reciclagem}:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:-reciclagem}-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ConnectionStrings__DefaultConnection: Data Source=/data/reciclagem.db
+      Jwt__Key: ${JWT_KEY:?defina JWT_KEY no .env}
+      Swagger__Enabled: ${SWAGGER_ENABLED:-false}
+      DisableHttpsRedirection: "true"
+    ports:
+      - "${API_PORT:-8080}:8080"
+    volumes:
+      - reciclagem-data:/data      # persiste o banco SQLite entre deploys
+    networks:
+      - reciclagem-net
+
+volumes:
+  reciclagem-data:
+
+networks:
+  reciclagem-net:
+    driver: bridge

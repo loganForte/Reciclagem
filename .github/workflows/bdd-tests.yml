@@ -1,0 +1,29 @@
+name: BDD Tests (Cucumber)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  bdd:
+    name: BDD - Cucumber + REST Assured
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Subir API e executar testes BDD
+        run: docker compose -f tests-bdd/docker-compose.yml up --build --abort-on-container-exit --exit-code-from tests
+
+      - name: Publicar relatório Cucumber
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-report
+          path: tests-bdd/target/cucumber-reports
+
+      - name: Limpar containers
+        if: always()
+        run: docker compose -f tests-bdd/docker-compose.yml down -v

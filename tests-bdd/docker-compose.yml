@@ -1,0 +1,21 @@
+# Sobe a API (Dockerfile da raiz do repositório) e executa os testes BDD contra ela.
+# Uso (a partir da raiz do repositório):
+#   docker compose -f tests-bdd/docker-compose.yml up --build --abort-on-container-exit --exit-code-from tests
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      DisableHttpsRedirection: "true"
+      Jwt__Key: ${JWT_KEY:-chave-de-teste-bdd-com-mais-de-32-caracteres-0123456789}
+
+  tests:
+    build: .
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      BASE_URL: http://api:8080
+    volumes:
+      - ./target:/tests/target

@@ -12,12 +12,14 @@
   <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white">
   <img alt="Azure" src="https://img.shields.io/badge/Azure-App%20Service-0078D4?logo=microsoftazure&logoColor=white">
+  <img alt="Cucumber" src="https://img.shields.io/badge/BDD-Cucumber-23D96C?logo=cucumber&logoColor=white">
+  <img alt="Java" src="https://img.shields.io/badge/Tests-Java%2017-ED8B00?logo=openjdk&logoColor=white">
   <img alt="Swagger" src="https://img.shields.io/badge/OpenAPI-Swagger-85EA2D?logo=swagger&logoColor=black">
 </p>
 
 <p align="center">
-  <!-- Troque USUARIO/REPO pelo seu repositório -->
-  <a href="https://github.com/USUARIO/REPO/actions"><img alt="CI/CD" src="https://github.com/USUARIO/REPO/actions/workflows/ci-cd.yml/badge.svg"></a>
+  <!-- Troque loganForte/Reciclagem pelo seu repositório -->
+  <a href="https://github.com/loganForte/Reciclagem/actions"><img alt="CI/CD" src="https://github.com/loganForte/Reciclagem/actions/workflows/ci-cd.yml/badge.svg"></a>
 </p>
 
 ---
@@ -55,6 +57,7 @@ Resultado esperado: coleta orientada por dado, e não por calendário fixo, com 
 | **Mapeamento** | **AutoMapper** | Separa entidades de domínio dos ViewModels expostos |
 | **Documentação** | **Swagger / OpenAPI** | Contrato da API navegável e testável no navegador |
 | **Testes** | **xUnit · Mvc.Testing** | Testes de integração com `WebApplicationFactory` por controller |
+| **Testes BDD** | **Java 17 · Cucumber · REST Assured · JSON Schema** | Cenários Gherkin que validam status, corpo e contrato de todas as APIs |
 | **Containers** | **Docker (multi-stage) · Docker Compose** | Imagem enxuta, usuário não-root, healthcheck e volume persistente |
 | **CI/CD** | **GitHub Actions** | Build, testes, imagem e deploy a cada push, sem intervenção manual |
 | **Registry** | **GitHub Container Registry** | Imagem versionada por SHA do commit |
@@ -170,7 +173,7 @@ Orquestração local (`docker-compose.yml`): serviço `api` na rede `reciclagem-
 Pré-requisito: Docker com Compose v2.
 
 ```bash
-git clone https://github.com/USUARIO/REPO.git && cd REPO
+git clone https://github.com/loganForte/Reciclagem.git && cd REPO
 cp .env.example .env              # defina JWT_KEY (openssl rand -hex 32)
 docker compose up -d --build
 docker compose ps                 # aguarde o status "healthy"
@@ -193,6 +196,39 @@ curl http://localhost:8080/health
 | `GET /api/relatorio/resumo` | Totais por tipo de resíduo e por ponto de coleta |
 | `GET /health` | Health check usado pelo Docker e pelo pipeline |
 
+## 🧪 Testes automatizados BDD (Java + Cucumber)
+
+Além dos testes xUnit, a pasta [`tests-bdd/`](tests-bdd) traz uma suíte de **testes de API em BDD**, escrita em **Gherkin (português)** e executada com **Java 17 + Cucumber + REST Assured**. São **32 cenários** (positivos e negativos) que cobrem todos os endpoints (auth, pontos de coleta, descartes, alertas, relatório e health) e validam **status code**, **corpo JSON** e **contrato com JSON Schema**.
+
+Exemplo (regra de negócio central: alerta ao atingir 80% da capacidade):
+
+```gherkin
+Cenário: Descarte que atinge 80% da capacidade gera alerta
+  Dado que existe um ponto de coleta com capacidade de 100 kg
+  Quando o operador registra um descarte de 85 kg nesse ponto
+  Então o status code deve ser 201
+  E o campo "alertaGerado" deve ser igual a "true"
+  E o alerta desse ponto deve estar aberto na lista de alertas
+```
+
+**Executar tudo com um comando** (sobe a API e roda os testes; requer apenas Docker):
+
+```bash
+docker compose -f tests-bdd/docker-compose.yml up --build --abort-on-container-exit --exit-code-from tests
+docker compose -f tests-bdd/docker-compose.yml down -v
+```
+
+**Executar com Maven** (Java 17 + Maven, com a API rodando em `localhost:8080`):
+
+```bash
+cd tests-bdd
+mvn test                                              # ambiente local
+mvn test -DbaseUrl=https://SEU-APP.azurewebsites.net  # outro ambiente (ex.: staging)
+mvn test -Dcucumber.filter.tags="@negativo"           # apenas cenários negativos
+```
+
+O relatório HTML fica em `tests-bdd/target/cucumber-reports/report.html`. No GitHub Actions, o workflow `bdd-tests.yml` roda a mesma suíte a cada push e publica o relatório como artefato. Detalhes em [`tests-bdd/README.md`](tests-bdd/README.md).
+
 ## 🧱 Tecnologias utilizadas
 
-**C#** · **.NET 8** · **ASP.NET Core Web API** · **Entity Framework Core 8** · **SQLite** · **AutoMapper** · **JWT Bearer** · **Swagger/OpenAPI** · **xUnit** · **Microsoft.AspNetCore.Mvc.Testing** · **Docker** · **Docker Compose** · **GitHub Actions** · **GitHub Container Registry** · **Azure App Service**
+**C#** · **.NET 8** · **ASP.NET Core Web API** · **Entity Framework Core 8** · **SQLite** · **AutoMapper** · **JWT Bearer** · **Swagger/OpenAPI** · **xUnit** · **Microsoft.AspNetCore.Mvc.Testing** · **Java 17** · **Cucumber (Gherkin)** · **REST Assured** · **JSON Schema** · **Docker** · **Docker Compose** · **GitHub Actions** · **GitHub Container Registry** · **Azure App Service**

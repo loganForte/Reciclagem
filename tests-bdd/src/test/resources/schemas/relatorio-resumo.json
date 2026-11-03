@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Relatório consolidado (GET /api/relatorio/resumo)",
+  "type": "object",
+  "required": ["totalColetadoKg", "alertasAbertos", "porTipoResiduo", "porPontoColeta"],
+  "properties": {
+    "totalColetadoKg": { "type": "number", "minimum": 0 },
+    "alertasAbertos": { "type": "integer", "minimum": 0 },
+    "porTipoResiduo": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tipoResiduo", "totalKg"],
+        "properties": {
+          "tipoResiduo": { "type": "string" },
+          "totalKg": { "type": "number" }
+        }
+      }
+    },
+    "porPontoColeta": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pontoColetaId", "nome", "cargaAtualKg", "capacidadeMaximaKg", "percentualOcupado"],
+        "properties": {
+          "pontoColetaId": { "type": "integer" },
+          "nome": { "type": "string" },
+          "cargaAtualKg": { "type": "number" },
+          "capacidadeMaximaKg": { "type": "number" },
+          "percentualOcupado": { "type": "number" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PontoColetaViewModel",
+  "type": "object",
+  "required": ["pontoColetaId", "nome", "endereco", "bairro", "capacidadeMaximaKg", "cargaAtualKg", "ativo"],
+  "properties": {
+    "pontoColetaId": { "type": "integer" },
+    "nome": { "type": "string" },
+    "endereco": { "type": "string" },
+    "bairro": { "type": "string" },
+    "capacidadeMaximaKg": { "type": "number" },
+    "cargaAtualKg": { "type": "number" },
+    "ativo": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

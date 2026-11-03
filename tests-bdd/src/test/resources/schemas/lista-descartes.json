@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lista de DescarteViewModel",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["descarteId", "pontoColetaId", "tipoResiduo", "pesoKg", "dataDescarte"],
+    "properties": {
+      "descarteId": { "type": "integer" },
+      "pontoColetaId": { "type": "integer" },
+      "tipoResiduo": { "type": "string" },
+      "pesoKg": { "type": "number" },
+      "dataDescarte": { "type": "string" }
+    }
+  }
+}

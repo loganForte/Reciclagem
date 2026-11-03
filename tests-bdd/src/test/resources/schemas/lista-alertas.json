@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lista de AlertaViewModel",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["alertaId", "pontoColetaId", "mensagem", "dataGeracao", "resolvido"],
+    "properties": {
+      "alertaId": { "type": "integer" },
+      "pontoColetaId": { "type": "integer" },
+      "mensagem": { "type": "string" },
+      "dataGeracao": { "type": "string" },
+      "resolvido": { "type": "boolean" }
+    }
+  }
+}

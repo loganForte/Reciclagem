@@ -1,0 +1,7 @@
+{
+  "nome": "${nome}",
+  "endereco": "Av. Paulista, 1000",
+  "bairro": "Bela Vista",
+  "capacidadeMaximaKg": ${capacidade},
+  "ativo": true
+}

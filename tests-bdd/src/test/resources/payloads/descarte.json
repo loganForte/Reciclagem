@@ -1,0 +1,5 @@
+{
+  "pontoColetaId": ${pontoId},
+  "tipoResiduo": "Plastico",
+  "pesoKg": ${peso}
+}

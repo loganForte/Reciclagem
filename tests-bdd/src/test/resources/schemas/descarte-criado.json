@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resposta do POST /api/descarte",
+  "type": "object",
+  "required": ["descarte", "alertaGerado"],
+  "properties": {
+    "descarte": {
+      "type": "object",
+      "required": ["descarteId", "pontoColetaId", "tipoResiduo", "pesoKg", "dataDescarte"],
+      "properties": {
+        "descarteId": { "type": "integer" },
+        "pontoColetaId": { "type": "integer" },
+        "tipoResiduo": { "type": "string" },
+        "pesoKg": { "type": "number" },
+        "dataDescarte": { "type": "string" }
+      }
+    },
+    "alertaGerado": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}
